@@ -1,0 +1,121 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext", "webworker"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    
+    /* Modules */
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/types/*": ["./types/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/contexts/*": ["./contexts/*"],
+      "@/app/*": ["./app/*"]
+    },
+    "rootDirs": [".", "./app", "./components", "./lib"],
+    "typeRoots": ["./types", "./node_modules/@types"],
+    
+    /* JavaScript Support */
+    "allowJs": true,
+    "checkJs": false,
+    
+    /* Emit */
+    "declaration": false,
+    "declarationMap": false,
+    "emitDeclarationOnly": false,
+    "importHelpers": true,
+    "noEmit": true,
+    "noEmitHelpers": false,
+    "noEmitOnError": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    
+    /* Interop Constraints */
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": false,
+    
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    
+    /* Completeness */
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    
+    /* Next.js specific */
+    "jsx": "preserve",
+    "incremental": true,
+    "tsBuildInfoFile": ".next/tsbuildinfo",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    
+    /* JSON Modules */
+    "resolveJsonModule": true,
+    
+    /* Advanced */
+    "pretty": true,
+    "preserveWatchOutput": true,
+    "listEmittedFiles": false,
+    "listFiles": false
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    ".next/types/**/*.ts",
+    "types/**/*.ts",
+    "global.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out",
+    "dist",
+    "build",
+    "coverage",
+    "*.config.js",
+    "*.config.mjs",
+    "public",
+    "cypress",
+    "playwright-report",
+    "test-results"
+  ],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}

@@ -1,0 +1,193 @@
+# Mercury E-commerce AI Platform - Production Deployment Configuration
+# This file can be used with various deployment platforms
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mercury-config
+  namespace: production
+data:
+  NODE_ENV: "production"
+  NEXT_PUBLIC_APP_NAME: "Mercury"
+  NEXT_PUBLIC_APP_VERSION: "1.0.0"
+  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mercury-app
+  namespace: production
+  labels:
+    app: mercury
+    component: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mercury
+      component: web
+  template:
+    metadata:
+      labels:
+        app: mercury
+        component: web
+    spec:
+      containers:
+      - name: mercury
+        image: mercury:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: NEXT_PUBLIC_SUPABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: mercury-secrets
+              key: supabase-url
+        - name: NEXT_PUBLIC_SUPABASE_ANON_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mercury-secrets
+              key: supabase-anon-key
+        - name: SUPABASE_SERVICE_ROLE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mercury-secrets
+              key: supabase-service-role-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mercury-secrets
+              key: openai-api-key
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: REDIS_PORT
+          value: "6379"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mercury-service
+  namespace: production
+  labels:
+    app: mercury
+spec:
+  selector:
+    app: mercury
+    component: web
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mercury-ingress
+  namespace: production
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - mercury.yourdomain.com
+    secretName: mercury-tls
+  rules:
+  - host: mercury.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mercury-service
+            port:
+              number: 80
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mercury-secrets
+  namespace: production
+type: Opaque
+data:
+  # Base64 encoded values (replace with actual values)
+  supabase-url: # echo -n "https://your-project.supabase.co" | base64
+  supabase-anon-key: # echo -n "your-anon-key" | base64  
+  supabase-service-role-key: # echo -n "your-service-role-key" | base64
+  openai-api-key: # echo -n "your-openai-api-key" | base64
+
+---
+# Redis Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: production
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP

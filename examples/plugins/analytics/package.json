@@ -1,0 +1,90 @@
+{
+  "name": "@mercury/analytics-plugin",
+  "version": "1.0.0",
+  "description": "Advanced analytics and reporting plugin for Mercury",
+  "main": "index.js",
+  "type": "module",
+  "keywords": ["mercury", "plugin", "analytics", "reporting", "metrics"],
+  "author": "Mercury Team",
+  "license": "MIT",
+  "dependencies": {
+    "@mercury/sdk": "^1.0.0"
+  },
+  "peerDependencies": {
+    "chart.js": "^4.4.0",
+    "date-fns": "^2.30.0"
+  },
+  "mercury": {
+    "plugin": {
+      "id": "advanced-analytics",
+      "name": "Advanced Analytics Suite",
+      "description": "Comprehensive analytics and reporting with custom metrics, dashboards, and insights",
+      "version": "1.0.0",
+      "category": "analytics",
+      "permissions": [
+        "analytics:read",
+        "analytics:write",
+        "orders:read",
+        "customers:read",
+        "products:read"
+      ],
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "trackingEnabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "retentionDays": {
+            "type": "number",
+            "default": 365,
+            "minimum": 30,
+            "maximum": 2555
+          },
+          "enableRealtimeTracking": {
+            "type": "boolean",
+            "default": true
+          },
+          "customMetrics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "formula": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "alertThresholds": {
+            "type": "object",
+            "properties": {
+              "conversionRate": { "type": "number", "default": 0.02 },
+              "cartAbandonmentRate": { "type": "number", "default": 0.7 },
+              "customerLifetimeValue": { "type": "number", "default": 100 }
+            }
+          },
+          "integrations": {
+            "type": "object",
+            "properties": {
+              "googleAnalytics": {
+                "type": "object",
+                "properties": {
+                  "enabled": { "type": "boolean", "default": false },
+                  "trackingId": { "type": "string" }
+                }
+              },
+              "mixpanel": {
+                "type": "object", 
+                "properties": {
+                  "enabled": { "type": "boolean", "default": false },
+                  "projectToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

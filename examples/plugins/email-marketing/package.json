@@ -1,0 +1,62 @@
+{
+  "name": "@mercury/email-marketing-plugin",
+  "version": "1.0.0",
+  "description": "Advanced email marketing automation plugin for Mercury",
+  "main": "index.js",
+  "type": "module",
+  "keywords": ["mercury", "plugin", "email", "marketing", "automation"],
+  "author": "Mercury Team",
+  "license": "MIT",
+  "dependencies": {
+    "@mercury/sdk": "^1.0.0"
+  },
+  "peerDependencies": {
+    "nodemailer": "^6.9.0",
+    "handlebars": "^4.7.8"
+  },
+  "mercury": {
+    "plugin": {
+      "id": "email-marketing",
+      "name": "Email Marketing Suite",
+      "description": "Comprehensive email marketing automation with templates, campaigns, and analytics",
+      "version": "1.0.0",
+      "category": "marketing",
+      "permissions": [
+        "customers:read",
+        "orders:read",
+        "email:send",
+        "analytics:write"
+      ],
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "emailProvider": {
+            "type": "string",
+            "enum": ["smtp", "sendgrid", "mailgun", "ses"],
+            "default": "smtp"
+          },
+          "smtpConfig": {
+            "type": "object",
+            "properties": {
+              "host": { "type": "string" },
+              "port": { "type": "number" },
+              "secure": { "type": "boolean" },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "user": { "type": "string" },
+                  "pass": { "type": "string" }
+                }
+              }
+            }
+          },
+          "defaultFromEmail": { "type": "string" },
+          "defaultFromName": { "type": "string" },
+          "enableAnalytics": { "type": "boolean", "default": true },
+          "unsubscribeUrl": { "type": "string" }
+        },
+        "required": ["emailProvider", "defaultFromEmail"]
+      }
+    }
+  }
+}
